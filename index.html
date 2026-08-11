@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pratik's Workshop | Hardware Engineering</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient background glow blobs -->
+  <div class="glow-blob glow-top-left"></div>
+  <div class="glow-blob glow-bottom-right"></div>
+
+  <!-- Header Navigation -->
+  <header class="top-nav glass-card">
+    <div class="brand">PRATIK'S WORKSHOP</div>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="news.html">News</a>
+      <a href="connect.html">Connect</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero-section glass-card">
+      <div class="badge">ELECTRONICS & EMBEDDED SYSTEMS</div>
+      <h1>Hardware Engineering & Open-Source IoT Prototypes</h1>
+      <p class="hero-subtext">
+        Designing custom PCBs, firmware, and step-by-step build logs. Download Gerbers, schematics, and source code for every project.
+      </p>
+      
+      <div class="hero-tags">
+        <span>[ ESP32 ]</span>
+        <span>[ KiCad ]</span>
+        <span>[ C / C++ ]</span>
+        <span>[ PCB Design ]</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="https://youtube.com/@PratiksworkShop" target="_blank" class="btn btn-purple">Subscribe on YouTube</a>
+        <a href="#projects" class="btn btn-outline">Featured Projects</a>
+      </div>
+    </section>
+
+  <!-- Stats Bar Section -->
+<section class="stats-bar glass-card">
+  <div class="stat-box">
+    <span id="youtube-subs" class="stat-val">--</span>
+    <span class="stat-lbl">YouTube Subscribers</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-box">
+    <span id="youtube-views" class="stat-val">--</span>
+    <span class="stat-lbl">Blogs & Articals</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-box">
+    <span id="github-repos" class="stat-val">--</span>
+    <span class="stat-lbl">Total GitHub Repos</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-box">
+    <span id="discord-members" class="stat-val">--</span>
+    <span class="stat-lbl">Discord online Members</span>
+  </div>
+</section>
+
+<!-- YouTube Video Player Section -->
+<section class="video-section glass-card">
+  <h3 id="latest-video-title">Latest Video Upload</h3>
+  <div class="iframe-wrapper">
+    <iframe id="latest-video-iframe" src="" title="Latest YouTube Video" allowfullscreen></iframe>
+  </div>
+</section>
+
+    <!-- Lab / Gear Setup Section -->
+    <section class="gear-section glass-card">
+      <h2 class="section-title">LAB / GEAR SETUP</h2>
+      
+      <div class="gear-grid">
+        <!-- Category 1 -->
+        <div class="gear-category">
+          <h3>Test & Measurement</h3>
+          <div class="gear-items">
+            <div class="gear-card" data-gear="oscilloscope">
+              <div class="gear-icon">📉</div>
+              <p class="gear-name">Oscilloscope</p>
+              <span class="gear-model">M7300</span>
+            </div>
+            <div class="gear-card" data-gear="multimeter">
+              <div class="gear-icon">📟</div>
+              <p class="gear-name">Digital Multimeter</p>
+              <span class="gear-model">Model 5-600</span>
+            </div>
+            <div class="gear-card" data-gear="powersupply">
+              <div class="gear-icon">⚡</div>
+              <p class="gear-name">Bench Power Supply</p>
+              <span class="gear-model">MX-3700</span>
+            </div>
+            <div class="gear-card" data-gear="logic-analyzer">
+              <div class="gear-icon">📊</div>
+              <p class="gear-name">Logic Analyzer</p>
+              <span class="gear-model">LCA-S493</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="gear-category">
+          <h3>Soldering & Rework</h3>
+          <div class="gear-items">
+            <div class="gear-card" data-gear="soldering-iron">
+              <div class="gear-icon">🖊️</div>
+              <p class="gear-name">Precision Soldering Iron</p>
+            </div>
+            <div class="gear-card" data-gear="rework-station">
+              <div class="gear-icon">💨</div>
+              <p class="gear-name">Hot Air Rework Station</p>
+            </div>
+            <div class="gear-card" data-gear="fume-extractor">
+              <div class="gear-icon">🌀</div>
+              <p class="gear-name">Fume Extractor</p>
+            </div>
+            <div class="gear-card" data-gear="brass-cleaner">
+              <div class="gear-icon">🧼</div>
+              <p class="gear-name">Brass Tip Cleaner</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category 3 -->
+        <div class="gear-category">
+          <h3>Prototyping & Tools</h3>
+          <div class="gear-items">
+            <div class="gear-card" data-gear="3d-printer">
+              <div class="gear-icon">🖨️</div>
+              <p class="gear-name">3D Printer</p>
+            </div>
+            <div class="gear-card" data-gear="pcb-etching">
+              <div class="gear-icon">🧪</div>
+              <p class="gear-name">PCB Etching Kit</p>
+            </div>
+            <div class="gear-card" data-gear="wire-strippers">
+              <div class="gear-icon">✂️</div>
+              <p class="gear-name">Wire Strippers</p>
+            </div>
+            <div class="gear-card" data-gear="component-organizers">
+              <div class="gear-icon">🗄️</div>
+              <p class="gear-name">Component Organizers</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category 4 -->
+        <div class="gear-category">
+          <h3>Computing</h3>
+          <div class="gear-items">
+            <div class="gear-card" data-gear="workstation">
+              <div class="gear-icon">🖥️</div>
+              <p class="gear-name">Workstation PC</p>
+            </div>
+            <div class="gear-card" data-gear="server-rack">
+              <div class="gear-icon">🗄️</div>
+              <p class="gear-name">Server Rack</p>
+            </div>
+            <div class="gear-card" data-gear="firmware-design">
+              <div class="gear-icon">💻</div>
+              <p class="gear-name">Firmware & Design</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Equipment Info Modal Overlay -->
+  <div id="gear-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-card">
+      <button class="modal-close" id="modal-close-btn">&times;</button>
+      <div class="modal-body">
+        <img id="modal-img" src="" alt="Equipment Image" class="modal-image" />
+        <div class="modal-info">
+          <span id="modal-model" class="badge"></span>
+          <h2 id="modal-title"></h2>
+          <p id="modal-functioning" class="modal-desc"></p>
+          <h4>Key Specs & Features:</h4>
+          <ul id="modal-specs"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

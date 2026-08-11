@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - Pratik's Workshop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="index.html" class="logo">PRATIK'S WORKSHOP</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="blogs.html">Blogs</a>
+        <a href="news.html">News</a>
+        <a href="connect.html">Connect</a>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-header">
+      <span class="badge">FEATURED BUILDS</span>
+      <h1>Hardware & Firmware Projects</h1>
+      <p>Explore custom PCBs, IoT prototypes, microcontrollers, and open-source schematics.</p>
+    </header>
+
+    <!-- Filter Buttons -->
+    <div class="filter-container">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="arduino">Arduino</button>
+      <button class="filter-btn" data-filter="esp32">ESP32</button>
+      <button class="filter-btn" data-filter="robotics">Robotics</button>
+      <button class="filter-btn" data-filter="power">Power</button>
+      <button class="filter-btn" data-filter="pcb">PCB Design</button>
+    </div>
+
+    <!-- Project Cards Grid -->
+    <div class="projects-grid">
+      
+      <!-- Project 1 -->
+      <div class="project-card" data-category="pcb esp32">
+        <div class="project-badge">⚡ ESP32</div>
+        <h3>DIY Pulse Oximeter & PCB</h3>
+        <p>Custom double-sided PCB designed in KiCad and etched using Ferrous Chloride. Displays SpO2 and HR on OLED screen.</p>
+        <div class="project-tags">
+          <span>KiCad</span>
+          <span>ESP32</span>
+          <span>C++</span>
+        </div>
+        <a href="https://github.com/pratiks-workshop" target="_blank" class="btn-primary">Get Gerber Files / Code</a>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project-card" data-category="robotics arduino">
+        <div class="project-badge">🦾 Robotics</div>
+        <h3>4-DOF Robotic Arm</h3>
+        <p>Servo-driven robotic manipulator powered by Arduino Uno with reverse kinematics calculations for smooth articulation.</p>
+        <div class="project-tags">
+          <span>Arduino</span>
+          <span>Servos</span>
+          <span>3D Printed</span>
+        </div>
+        <a href="https://github.com/pratiks-workshop" target="_blank" class="btn-primary">Get Gerber Files / Code</a>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project-card" data-category="esp32 power">
+        <div class="project-badge">📡 IoT Sensor</div>
+        <h3>Smart Industrial Telemetry</h3>
+        <p>Wireless sensor cluster measuring temperature, current draw, and power quality over MQTT web dashboards.</p>
+        <div class="project-tags">
+          <span>ESP32</span>
+          <span>MQTT</span>
+          <span>Glassmorphism UI</span>
+        </div>
+        <a href="https://github.com/pratiks-workshop" target="_blank" class="btn-primary">Get Gerber Files / Code</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
