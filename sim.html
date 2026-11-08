@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLC Circuit Simulator Studio - Pratik's Workshop</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #131c2e;
+            --border-color: #1e293b;
+            --accent-cyan: #00f0ff;
+            --accent-green: #00e676;
+            --accent-yellow: #ffea00;
+            --accent-pink: #ff007f;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        header { background: rgba(19, 28, 46, 0.95); border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green)); color: #000; font-weight: 800; font-size: 14px; padding: 6px 12px; border-radius: 6px; letter-spacing: 1px; }
+        h1 { font-size: 18px; font-weight: 600; color: var(--text-main); }
+        
+        .global-controls { display: flex; gap: 10px; align-items: center; }
+        .btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .btn-run { background: rgba(0, 230, 118, 0.15); border-color: var(--accent-green); color: var(--accent-green); }
+        .btn-run:hover { background: var(--accent-green); color: #000; }
+        .btn-clear { background: rgba(255, 0, 127, 0.15); border-color: var(--accent-pink); color: var(--accent-pink); }
+        .btn-clear:hover { background: var(--accent-pink); color: #fff; }
+
+        .select-tool { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--accent-cyan); padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; outline: none; }
+
+        .workspace { display: flex; flex: 1; overflow: hidden; }
+        .workbench-area { flex: 3; display: flex; flex-direction: column; position: relative; background: #070a12; border-right: 1px solid var(--border-color); }
+        .canvas-toolbar { position: absolute; top: 12px; left: 12px; background: rgba(19, 28, 46, 0.85); backdrop-filter: blur(8px); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 8px; display: flex; gap: 16px; font-size: 12px; z-index: 5; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        canvas#workbench { width: 100%; height: 100%; display: block; cursor: crosshair; }
+        .status-badge { position: absolute; bottom: 12px; right: 12px; background: rgba(19, 28, 46, 0.9); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-family: monospace; font-weight: bold; }
+
+        .sidebar { flex: 2; background: var(--bg-card); display: flex; flex-direction: column; overflow-y: auto; padding: 16px; gap: 16px; border-left: 1px solid var(--border-color); }
+        .card { background: rgba(11, 15, 25, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; }
+        .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--accent-cyan); margin-bottom: 12px; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .edit-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+        .edit-row label { font-size: 12px; color: var(--text-muted); width: 80px; }
+        .edit-input { background: #070a12; border: 1px solid var(--border-color); color: var(--accent-green); font-family: monospace; font-size: 14px; padding: 6px 10px; border-radius: 4px; flex: 1; }
+
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; font-family: monospace; }
+        .calc-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px; border-radius: 6px; }
+        .calc-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
+        .calc-value { color: var(--accent-green); font-weight: bold; font-size: 13px; }
+
+        .oscilloscope-panel { height: 185px; background: #05070c; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .scope-header { background: rgba(19, 28, 46, 0.9); padding: 6px 16px; font-size: 11px; font-family: monospace; font-weight: bold; color: var(--accent-green); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
+        .scope-body { flex: 1; display: flex; padding: 6px; gap: 8px; }
+        .scope-canvas-box { flex: 1; background: #000; border: 1px solid var(--border-color); border-radius: 6px; position: relative; overflow: hidden; }
+        canvas.scope { width: 100%; height: 100%; display: block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-badge">PRATIK'S WORKSHOP</div>
+            <h1>RLC Circuit Simulator Studio</h1>
+        </div>
+        <div class="global-controls">
+            <select id="componentSelect" class="select-tool" onchange="handleComponentSelection(this)">
+                <option value="" disabled selected>+ Select Component to Place...</option>
+                <optgroup label="Passive Components">
+                    <option value="resistor">Resistor (R)</option>
+                    <option value="inductor">Inductor (L)</option>
+                    <option value="capacitor">Capacitor (C)</option>
+                </optgroup>
+                <optgroup label="Power Sources">
+                    <option value="ac_voltage">AC Voltage Source</option>
+                    <option value="dc_voltage">DC Voltage Source</option>
+                </optgroup>
+                <optgroup label="Ground">
+                    <option value="ground">Ground Node (0V)</option>
+                </optgroup>
+            </select>
+            <button class="btn" onclick="undo()">↶ Undo (Ctrl+Z)</button>
+            <button class="btn" onclick="loadDefaultRLC()">↺ Preset RLC Loop</button>
+            <button id="runBtn" class="btn btn-run" onclick="toggleSimulation()">⏸ Pause Simulation</button>
+            <button class="btn btn-clear" onclick="clearCircuit()">🗑 Clear Circuit</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <div class="workbench-area">
+            <div class="canvas-toolbar">
+                <div class="legend-item"><div class="dot" style="background:var(--accent-cyan)"></div>Source Signal</div>
+                <div class="legend-item"><div class="dot" style="background:var(--accent-green)"></div>Current Flow (I)</div>
+                <div class="legend-item" style="color:var(--text-muted); font-size:11px;">| Click to Select | Drag to Move | Red Dots = Terminal Wire Connections</div>
+            </div>
+            <canvas id="workbench"></canvas>
+            <div class="status-badge" id="simStatus" style="color:var(--accent-green)">State: RUNNING</div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card" id="editorCard">
+                <div class="card-title">⚙ COMPONENT PROPERTIES <span id="compTypeTag" style="color:var(--accent-cyan); font-size:11px;">AC_VOLTAGE</span></div>
+                <div id="editorContent">
+                    <div class="edit-row">
+                        <label style="width:100%; font-size:11px;">Keyboard Value Input:</label>
+                    </div>
+                    <div class="edit-row">
+                        <input type="number" id="keyboardValInput" class="edit-input" value="12" oninput="updateSelectedValue(this.value)">
+                        <select id="unitSelect" class="select-tool" style="padding:6px 10px;" onchange="updateSelectedUnit(this.value)">
+                            <option value="mV">mV</option>
+                            <option value="V" selected>V</option>
+                            <option value="kV">kV</option>
+                        </select>
+                    </div>
+                    <div class="edit-row" style="margin-top:12px; gap:8px;">
+                        <button class="btn" style="flex:1; justify-content:center;" onclick="rotateSelected()">↻ Rotate 90°</button>
+                        <button class="btn btn-clear" style="flex:1; justify-content:center;" onclick="deleteSelected()">🗑 Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">IMPEDANCE & RESONANCE SOLVER</div>
+                <div class="calc-grid">
+                    <div class="calc-item"><div class="calc-label">INDUCTIVE REACTANCE (X_L)</div><div class="calc-value" id="valXL">31.42 Ω</div></div>
+                    <div class="calc-item"><div class="calc-label">CAPACITIVE REACTANCE (X_C)</div><div class="calc-value" id="valXC">31.83 Ω</div></div>
+                    <div class="calc-item"><div class="calc-label">NET IMPEDANCE (|Z|)</div><div class="calc-value" id="valZ">20.00 ∠-1.2° Ω</div></div>
+                    <div class="calc-item"><div class="calc-label">RESONANT FREQ (F_0)</div><div class="calc-value" id="valF0">50.33 Hz</div></div>
+                    <div class="calc-item"><div class="calc-label">QUALITY FACTOR (Q)</div><div class="calc-value" id="valQ">1.57</div></div>
+                    <div class="calc-item"><div class="calc-label">PHASE ANGLE (Θ)</div><div class="calc-value" id="valTheta">-1.2°</div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">NODAL & MESH ANALYSIS</div>
+                <div class="calc-grid">
+                    <div class="calc-item"><div class="calc-label">NODE VOLTAGE 1 (V_1)</div><div class="calc-value" id="valV1">12.00 ∠0.0° V</div></div>
+                    <div class="calc-item"><div class="calc-label">NODE VOLTAGE 2 (V_2)</div><div class="calc-value" id="valV2">10.15 ∠-32.4° V</div></div>
+                    <div class="calc-item"><div class="calc-label">MESH CURRENT (I_RMS)</div><div class="calc-value" id="valIrms">0.60 A</div></div>
+                    <div class="calc-item"><div class="calc-label">THEVENIN VOLT (V_TH)</div><div class="calc-value" id="valVth">12.00 V</div></div>
+                    <div class="calc-item"><div class="calc-label">THEVENIN IMP (Z_TH)</div><div class="calc-value" id="valZth">20.0 - j0.4 Ω</div></div>
+                    <div class="calc-item"><div class="calc-label">POWER FACTOR</div><div class="calc-value" id="valPF">0.999 Ind</div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">POWER MEASUREMENTS</div>
+                <div class="calc-grid">
+                    <div class="calc-item"><div class="calc-label">ACTIVE POWER (P)</div><div class="calc-value" id="valP">7.20 W</div></div>
+                    <div class="calc-item"><div class="calc-label">REACTIVE POWER (Q_P)</div><div class="calc-value" id="valQp">-0.15 VAR</div></div>
+                    <div class="calc-item" style="grid-column: span 2;"><div class="calc-label">APPARENT POWER (S)</div><div class="calc-value" id="valS">7.20 VA (99.9%)</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="oscilloscope-panel">
+        <div class="scope-header">
+            <span>REAL-TIME DUAL OSCILLOSCOPE (CH1: SOURCE VOLTAGE V(t) vs CH2: CIRCUIT CURRENT I(t))</span>
+            <span id="scopeTimebase">Timebase: 5ms/div | Voltage: 5V/div</span>
+        </div>
+        <div class="scope-body">
+            <div class="scope-canvas-box"><canvas id="scopeCanvas" class="scope"></canvas></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('workbench');
+        const ctx = canvas.getContext('2d');
+        const scopeCanvas = document.getElementById('scopeCanvas');
+        const scopeCtx = scopeCanvas.getContext('2d');
+
+        let isRunning = true;
+        let animOffset = 0;
+        let circuitElements = [];
+        let wires = [];
+        let undoStack = [];
+
+        let activeTool = null;
+        let draggingElement = null;
+        let dragOffset = { x: 0, y: 0 };
+        let selectedElement = null;
+
+        let wiringStartPoint = null;
+        let mousePos = { x: 0, y: 0 };
+
+        function saveUndoState() {
+            if (undoStack.length > 25) undoStack.shift();
+            undoStack.push(JSON.stringify({ circuitElements, wires }));
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            const previousState = JSON.parse(undoStack.pop());
+            circuitElements = previousState.circuitElements;
+            wires = previousState.wires;
+            selectedElement = null;
+            renderEditor();
+            drawWorkbench();
+            if (isRunning) runCalculations();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                undo();
+            }
+        });
+
+        function resizeCanvases() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            scopeCanvas.width = scopeCanvas.parentElement.clientWidth;
+            scopeCanvas.height = scopeCanvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        function loadDefaultRLC() {
+            saveUndoState();
+            circuitElements = [
+                { id: 1, type: 'ac_voltage', x: 120, y: 170, val: 12, unit: 'V', freq: 50, rotation: 0 },
+                { id: 2, type: 'resistor', x: 280, y: 100, val: 20, unit: 'Ω', rotation: 0 },
+                { id: 3, type: 'inductor', x: 460, y: 170, val: 100, unit: 'mH', rotation: 90 },
+                { id: 4, type: 'capacitor', x: 280, y: 240, val: 100, unit: 'µF', rotation: 0 }
+            ];
+
+            // Orthogonal 90° Loop Routing
+            wires = [
+                { id: 101, path: [{ x: 90, y: 170 }, { x: 90, y: 100 }, { x: 250, y: 100 }] },
+                { id: 102, path: [{ x: 310, y: 100 }, { x: 460, y: 100 }, { x: 460, y: 140 }] },
+                { id: 103, path: [{ x: 460, y: 200 }, { x: 460, y: 240 }, { x: 310, y: 240 }] },
+                { id: 104, path: [{ x: 250, y: 240 }, { x: 90, y: 240 }, { x: 90, y: 170 }] }
+            ];
+
+            selectedElement = circuitElements[0];
+            renderEditor();
+            if (isRunning) runCalculations();
+            drawWorkbench();
+        }
+
+        function clearCircuit() {
+            saveUndoState();
+            circuitElements = [];
+            wires = [];
+            selectedElement = null;
+            wiringStartPoint = null;
+            isRunning = false;
+            document.getElementById('runBtn').innerText = "▶ Run Simulation";
+            document.getElementById('simStatus').innerText = "State: PAUSED";
+            document.getElementById('simStatus').style.color = "var(--accent-yellow)";
+            renderEditor();
+            resetMeasurementsToNone();
+            drawWorkbench();
+        }
+
+        function handleComponentSelection(selectElem) {
+            activeTool = selectElem.value;
+            setTimeout(() => { selectElem.selectedIndex = 0; }, 150);
+        }
+
+        function getTerminals(el) {
+            let rad = (el.rotation || 0) * Math.PI / 180;
+            let dx = 30 * Math.cos(rad);
+            let dy = 30 * Math.sin(rad);
+
+            if (el.type === 'ground') return [{ id: 't1', x: el.x, y: el.y - 15 }];
+            return [
+                { id: 't1', x: el.x - dx, y: el.y - dy },
+                { id: 't2', x: el.x + dx, y: el.y + dy }
+            ];
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mousePos.x = e.clientX - rect.left;
+            mousePos.y = e.clientY - rect.top;
+
+            if (draggingElement) {
+                draggingElement.x = mousePos.x - dragOffset.x;
+                draggingElement.y = mousePos.y - dragOffset.y;
+                drawWorkbench();
+            } else if (wiringStartPoint) {
+                drawWorkbench();
+            }
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            const mx = mousePos.x;
+            const my = mousePos.y;
+
+            // 1. Terminal Click Detection (Proteus 90° Routing)
+            for (let el of circuitElements) {
+                let terms = getTerminals(el);
+                for (let t of terms) {
+                    if (Math.hypot(t.x - mx, t.y - my) < 10) {
+                        if (!wiringStartPoint) {
+                            wiringStartPoint = { x: t.x, y: t.y };
+                        } else {
+                            saveUndoState();
+                            wires.push({
+                                id: Date.now(),
+                                path: [
+                                    { x: wiringStartPoint.x, y: wiringStartPoint.y },
+                                    { x: t.x, y: wiringStartPoint.y },
+                                    { x: t.x, y: t.y }
+                                ]
+                            });
+                            wiringStartPoint = null;
+                        }
+                        drawWorkbench();
+                        return;
+                    }
+                }
+            }
+
+            // 2. Component Drag & Select
+            for (let el of circuitElements) {
+                if (Math.hypot(el.x - mx, el.y - my) < 25) {
+                    selectedElement = el;
+                    draggingElement = el;
+                    dragOffset.x = mx - el.x;
+                    dragOffset.y = my - el.y;
+                    renderEditor();
+                    drawWorkbench();
+                    return;
+                }
+            }
+
+            // 3. Add Component
+            if (activeTool) {
+                saveUndoState();
+                let newComp = {
+                    id: Date.now(),
+                    type: activeTool,
+                    x: mx,
+                    y: my,
+                    val: activeTool === 'resistor' ? 20 : (activeTool === 'inductor' ? 100 : (activeTool === 'capacitor' ? 100 : 12)),
+                    unit: activeTool === 'resistor' ? 'Ω' : (activeTool === 'inductor' ? 'mH' : (activeTool === 'capacitor' ? 'µF' : 'V')),
+                    rotation: 0
+                };
+                circuitElements.push(newComp);
+                selectedElement = newComp;
+                activeTool = null;
+                renderEditor();
+                drawWorkbench();
+            } else {
+                selectedElement = null;
+                renderEditor();
+                drawWorkbench();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => { draggingElement = null; });
+
+        function renderEditor() {
+            const tag = document.getElementById('compTypeTag');
+            const valInput = document.getElementById('keyboardValInput');
+            const unitSelect = document.getElementById('unitSelect');
+
+            if (!selectedElement) {
+                tag.innerText = "NONE SELECTED";
+                valInput.value = "";
+                return;
+            }
+
+            tag.innerText = selectedElement.type.toUpperCase();
+            valInput.value = selectedElement.val;
+
+            if (selectedElement.type === 'resistor') unitSelect.innerHTML = `<option value="Ω">Ω</option><option value="kΩ">kΩ</option>`;
+            else if (selectedElement.type === 'inductor') unitSelect.innerHTML = `<option value="mH">mH</option><option value="H">H</option>`;
+            else if (selectedElement.type === 'capacitor') unitSelect.innerHTML = `<option value="µF">µF</option><option value="nF">nF</option>`;
+            else unitSelect.innerHTML = `<option value="mV">mV</option><option value="V" selected>V</option>`;
+        }
+
+        function updateSelectedValue(val) {
+            if (!selectedElement) return;
+            saveUndoState();
+            selectedElement.val = parseFloat(val) || 0;
+            drawWorkbench();
+            if (isRunning) runCalculations();
+        }
+
+        function updateSelectedUnit(unit) {
+            if (!selectedElement) return;
+            saveUndoState();
+            selectedElement.unit = unit;
+            drawWorkbench();
+            if (isRunning) runCalculations();
+        }
+
+        function rotateSelected() {
+            if (!selectedElement) return;
+            saveUndoState();
+            selectedElement.rotation = ((selectedElement.rotation || 0) + 90) % 360;
+            drawWorkbench();
+        }
+
+        function deleteSelected() {
+            if (!selectedElement) return;
+            saveUndoState();
+            circuitElements = circuitElements.filter(e => e.id !== selectedElement.id);
+            selectedElement = null;
+            renderEditor();
+            drawWorkbench();
+            if (isRunning) runCalculations();
+        }
+
+        function resetMeasurementsToNone() {
+            const fields = ['valXL', 'valXC', 'valZ', 'valF0', 'valQ', 'valTheta', 'valV1', 'valV2', 'valIrms', 'valVth', 'valZth', 'valPF', 'valP', 'valQp', 'valS'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = "---";
+            });
+        }
+
+        function runCalculations() {
+            let R = 20, L = 0.1, C = 0.0001, V = 12, f = 50;
+            
+            circuitElements.forEach(el => {
+                if (el.type === 'resistor') R = el.unit === 'kΩ' ? el.val * 1000 : el.val;
+                if (el.type === 'inductor') L = el.unit === 'H' ? el.val : el.val / 1000;
+                if (el.type === 'capacitor') C = el.unit === 'nF' ? el.val / 1e9 : el.val / 1e6;
+                if (el.type === 'ac_voltage') V = el.unit === 'mV' ? el.val / 1000 : el.val;
+            });
+
+            const omega = 2 * Math.PI * f;
+            const XL = omega * L;
+            const XC = 1 / (omega * C);
+            const Xnet = XL - XC;
+            const Z_mag = Math.sqrt(R * R + Xnet * Xnet);
+            const theta = Math.atan2(Xnet, R) * (180 / Math.PI);
+            
+            const f0 = 1 / (2 * Math.PI * Math.sqrt(L * C));
+            const Q = XL / R;
+            const Irms = V / Z_mag;
+
+            const V1 = V;
+            const V2 = Irms * Math.sqrt(R*R + XC*XC);
+            const P = Irms * Irms * R;
+            const Qp = Irms * Irms * Xnet;
+            const S = V * Irms;
+            const pf = Math.cos(theta * Math.PI / 180);
+
+            document.getElementById('valXL').innerText = XL.toFixed(2) + ' Ω';
+            document.getElementById('valXC').innerText = XC.toFixed(2) + ' Ω';
+            document.getElementById('valZ').innerText = Z_mag.toFixed(2) + ` ∠${theta.toFixed(1)}° Ω`;
+            document.getElementById('valF0').innerText = f0.toFixed(2) + ' Hz';
+            document.getElementById('valQ').innerText = Q.toFixed(2);
+            document.getElementById('valTheta').innerText = theta.toFixed(1) + '°';
+
+            document.getElementById('valV1').innerText = V1.toFixed(2) + ' ∠0.0° V';
+            document.getElementById('valV2').innerText = V2.toFixed(2) + ` ∠${(theta/2).toFixed(1)}° V`;
+            document.getElementById('valIrms').innerText = Irms.toFixed(2) + ' A';
+            document.getElementById('valVth').innerText = V.toFixed(2) + ' V';
+            document.getElementById('valZth').innerText = `${R.toFixed(1)} + j${Xnet.toFixed(1)} Ω`;
+            document.getElementById('valPF').innerText = pf.toFixed(3) + (Xnet >= 0 ? ' Ind' : ' Cap');
+
+            document.getElementById('valP').innerText = P.toFixed(2) + ' W';
+            document.getElementById('valQp').innerText = Qp.toFixed(2) + ' VAR';
+            document.getElementById('valS').innerText = S.toFixed(2) + ` VA (${(pf*100).toFixed(1)}%)`;
+        }
+
+        function toggleSimulation() {
+            isRunning = !isRunning;
+            const btn = document.getElementById('runBtn');
+            const status = document.getElementById('simStatus');
+            if (isRunning) {
+                btn.innerText = "⏸ Pause Simulation";
+                status.innerText = "State: RUNNING";
+                status.style.color = "var(--accent-green)";
+                runCalculations();
+            } else {
+                btn.innerText = "▶ Run Simulation";
+                status.innerText = "State: PAUSED";
+                status.style.color = "var(--accent-yellow)";
+                resetMeasurementsToNone();
+            }
+        }
+
+        function drawSymbol(el) {
+            ctx.save();
+            ctx.translate(el.x, el.y);
+            ctx.rotate((el.rotation || 0) * Math.PI / 180);
+            ctx.strokeStyle = '#00e676';
+            ctx.lineWidth = 2;
+
+            if (el.type === 'resistor') {
+                ctx.beginPath();
+                ctx.moveTo(-30, 0); ctx.lineTo(-20, 0);
+                ctx.lineTo(-15, -10); ctx.lineTo(-5, 10);
+                ctx.lineTo(5, -10); ctx.lineTo(15, 10);
+                ctx.lineTo(20, 0); ctx.lineTo(30, 0);
+                ctx.stroke();
+            } else if (el.type === 'inductor') {
+                ctx.beginPath(); ctx.moveTo(-30, 0); ctx.lineTo(-20, 0); ctx.stroke();
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath(); ctx.arc(-15 + i * 10, 0, 5, Math.PI, 0, false); ctx.stroke();
+                }
+                ctx.beginPath(); ctx.moveTo(20, 0); ctx.lineTo(30, 0); ctx.stroke();
+            } else if (el.type === 'capacitor') {
+                ctx.beginPath();
+                ctx.moveTo(-30, 0); ctx.lineTo(-8, 0); ctx.moveTo(8, 0); ctx.lineTo(30, 0);
+                ctx.moveTo(-8, -15); ctx.lineTo(-8, 15);
+                ctx.moveTo(8, -15); ctx.lineTo(8, 15);
+                ctx.stroke();
+            } else if (el.type === 'ac_voltage') {
+                ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(-5, 0, 5, Math.PI, 0, false); ctx.stroke();
+                ctx.beginPath(); ctx.arc(5, 0, 5, 0, Math.PI, false); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-30, 0); ctx.lineTo(-20, 0); ctx.moveTo(20, 0); ctx.lineTo(30, 0); ctx.stroke();
+            }
+
+            ctx.fillStyle = '#00f0ff';
+            ctx.font = '11px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${el.val}${el.unit}`, 0, 28);
+
+            ctx.restore();
+        }
+
+        function drawWorkbench() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background Grid
+            ctx.strokeStyle = '#121c2e';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+            for (let y = 0; y < canvas.height; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+
+            // Draw Wires
+            ctx.strokeStyle = '#00e676';
+            ctx.lineWidth = 2;
+            wires.forEach(w => {
+                ctx.beginPath();
+                w.path.forEach((pt, idx) => {
+                    if (idx === 0) ctx.moveTo(pt.x, pt.y);
+                    else ctx.lineTo(pt.x, pt.y);
+                });
+                ctx.stroke();
+
+                // Animated current dots along wire path
+                if (isRunning) {
+                    animOffset = (animOffset + 0.4) % 20;
+                    ctx.fillStyle = '#00f0ff';
+                    for (let i = 0; i < w.path.length - 1; i++) {
+                        let p1 = w.path[i];
+                        let p2 = w.path[i+1];
+                        let dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+                        for (let d = animOffset; d < dist; d += 20) {
+                            let ratio = d / dist;
+                            let px = p1.x + (p2.x - p1.x) * ratio;
+                            let py = p1.y + (p2.y - p1.y) * ratio;
+                            ctx.fillRect(px - 2, py - 2, 4, 4);
+                        }
+                    }
+                }
+            });
+
+            // Proteus 90° Routing Wire Preview
+            if (wiringStartPoint) {
+                ctx.strokeStyle = '#00f0ff';
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(wiringStartPoint.x, wiringStartPoint.y);
+                ctx.lineTo(mousePos.x, wiringStartPoint.y);
+                ctx.lineTo(mousePos.x, mousePos.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw Components & Selection Highlight
+            circuitElements.forEach(el => {
+                drawSymbol(el);
+                
+                if (selectedElement && selectedElement.id === el.id) {
+                    ctx.strokeStyle = '#00f0ff';
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeRect(el.x - 35, el.y - 35, 70, 70);
+                    ctx.setLineDash([]);
+                }
+
+                // Red Terminal Pins
+                getTerminals(el).forEach(t => {
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ff007f';
+                    ctx.fill();
+                });
+            });
+        }
+
+        let scopeTime = 0;
+        function renderOscilloscope() {
+            scopeCtx.clearRect(0, 0, scopeCanvas.width, scopeCanvas.height);
+            
+            scopeCtx.strokeStyle = '#112211';
+            scopeCtx.lineWidth = 1;
+            for (let x = 0; x < scopeCanvas.width; x += 40) { scopeCtx.beginPath(); scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, scopeCanvas.height); scopeCtx.stroke(); }
+            for (let y = 0; y < scopeCanvas.height; y += 30) { scopeCtx.beginPath(); scopeCtx.moveTo(0, y); scopeCtx.lineTo(scopeCanvas.width, y); scopeCtx.stroke(); }
+
+            scopeCtx.lineWidth = 2;
+
+            if (isRunning) {
+                scopeTime += 0.05;
+
+                // CH1: Source Voltage (Cyan)
+                scopeCtx.strokeStyle = '#00f0ff';
+                scopeCtx.beginPath();
+                for (let x = 0; x < scopeCanvas.width; x++) {
+                    let y = scopeCanvas.height / 2 - Math.sin(scopeTime + x * 0.03) * 35;
+                    if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+                }
+                scopeCtx.stroke();
+
+                // CH2: Current (Green)
+                scopeCtx.strokeStyle = '#00e676';
+                scopeCtx.beginPath();
+                for (let x = 0; x < scopeCanvas.width; x++) {
+                    let y = scopeCanvas.height / 2 - Math.sin(scopeTime + x * 0.03 - 0.5) * 28;
+                    if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+                }
+                scopeCtx.stroke();
+            } else {
+                scopeCtx.strokeStyle = '#00f0ff';
+                scopeCtx.beginPath();
+                scopeCtx.moveTo(0, scopeCanvas.height / 2);
+                scopeCtx.lineTo(scopeCanvas.width, scopeCanvas.height / 2);
+                scopeCtx.stroke();
+            }
+
+            requestAnimationFrame(renderOscilloscope);
+        }
+
+        loadDefaultRLC();
+        renderOscilloscope();
+        function loop() { drawWorkbench(); requestAnimationFrame(loop); }
+        loop();
+    </script>
+</body>
+</html>
