@@ -24,12 +24,12 @@ const gearDatabase = {
     functioning: 'Provides regulated, clean DC power with precise voltage and current limiting controls for testing prototypes safely.',
     specs: ['0-30V Variable DC Output', '0-5A Adjustable Current Limit', 'Digital LED Readout Display', 'Short Circuit & Overcurrent Lockout']
   },
-  'logic-analyzer': {
-    title: 'USB Logic Analyzer',
-    model: 'LCA-S493',
+  'rlc-sim1': {
+    title: 'Resistor capacitor inductor simulator',
+    model: 'vega-x',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80',
-    functioning: 'Captures and decodes digital communications like SPI, I2C, and UART to debug microcontrollers and embedded protocols.',
-    specs: ['8 Digital Channels', '24MHz Sampling Frequency', 'Automated Protocol Decoder Support', 'USB Direct Computer Logging']
+    functioning: 'under development, I2C, and UART to debug microcontrollers and embedded protocols.',
+    specs: ['', '24MHz Sampling Frequency', 'At', '']
   }
 };
 
